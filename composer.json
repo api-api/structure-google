@@ -1,0 +1,46 @@
+{
+  "name": "api-api/structure-google",
+  "description": "Structure implementation for the API of any Google service.",
+  "version": "1.0.0",
+  "license": "GPL-3.0",
+  "keywords": [
+    "api-api",
+    "structure",
+    "structure-google"
+  ],
+  "homepage": "http://awesome.ug",
+  "authors": [
+    {
+      "name": "Felix Arntz",
+      "email": "felix-arntz@leaves-and-love.net",
+      "homepage": "https://leaves-and-love.net",
+      "role": "Lead Developer"
+    },
+    {
+      "name": "Sven Wagener",
+      "email": "sven@awesome.ug",
+      "homepage": "http://awesome.ug",
+      "role": "Head of Development"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/api-api/structure-google/issues"
+  },
+  "config": {
+    "preferred-install": "dist"
+  },
+  "autoload": {
+    "psr-4": {
+      "APIAPI\\Structure_Google\\": "src/Structure_Google/"
+    },
+    "files": [
+      "src/structure-google.php"
+    ]
+  },
+  "require": {
+    "api-api/core": "*"
+  },
+  "require-dev": {
+    "codeclimate/php-test-reporter": "dev-master"
+  }
+}
