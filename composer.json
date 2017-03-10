@@ -39,8 +39,5 @@
   },
   "require": {
     "api-api/core": "*"
-  },
-  "require-dev": {
-    "codeclimate/php-test-reporter": "dev-master"
   }
 }
