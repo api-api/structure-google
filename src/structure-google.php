@@ -14,6 +14,9 @@ if ( ! function_exists( 'apiapi_register_structure_google' ) ) {
 	 * It is stored in a global if the API-API has not yet been loaded.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @param string $name          Unique slug for the service's API structure.
+	 * @param string $discovery_uri Discovery URI for the API.
 	 */
 	function apiapi_register_structure_google( $name, $discovery_uri ) {
 		$structure = new APIAPI\Structure_Google\Structure_Google( $name, $discovery_uri );
