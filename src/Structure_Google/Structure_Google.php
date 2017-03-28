@@ -49,6 +49,15 @@ if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
 		protected $update_cached_structure_callback = null;
 
 		/**
+		 * Internal variable to aid with parsing a discovery response.
+		 *
+		 * @since 1.0.0
+		 * @access protected
+		 * @var array
+		 */
+		protected $uri_lookup = array();
+
+		/**
 		 * Constructor.
 		 *
 		 * @since 1.0.0
@@ -117,7 +126,7 @@ if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
 			$this->base_uri = $structure_response['baseUrl'];
 			$this->global_params = $structure_response['parameters'];
 
-			$uri_lookup = array();
+			$this->uri_lookup = array();
 
 			foreach ( $structure_response['resources'] as $endpoint_name => $endpoint ) {
 				if ( isset( $endpoint['resources'] ) ) {
@@ -149,7 +158,14 @@ if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
 
 				$params = array();
 
-				if ( isset( $uri_lookup[ $uri ] ) ) {
+				if ( ! isset( $method_data['parameters'] ) ) {
+					$parsed_uri = $uri;
+
+					$this->routes[ $parsed_uri ] = array(
+						'primary_params' => array(),
+						'methods'        => array(),
+					);
+				} elseif ( isset( $this->uri_lookup[ $uri ] ) ) {
 					foreach ( $method_data['parameters'] as $param => $param_data ) {
 						if ( isset( $param_data['location'] ) && 'path' === $param_data['location'] ) {
 							continue;
@@ -158,7 +174,7 @@ if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
 						$params[ $param ] = $param_data;
 					}
 
-					$parsed_uri = $uri_lookup[ $uri ];
+					$parsed_uri = $this->uri_lookup[ $uri ];
 				} else {
 					$parsed_uri = $uri;
 					$primary_params = array();
@@ -173,7 +189,7 @@ if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
 						}
 					}
 
-					$uri_lookup[ $uri ] = $parsed_uri;
+					$this->uri_lookup[ $uri ] = $parsed_uri;
 
 					$this->routes[ $parsed_uri ] = array(
 						'primary_params' => $primary_params,
