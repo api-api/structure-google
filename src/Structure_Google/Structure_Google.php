@@ -120,55 +120,74 @@ if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
 			$uri_lookup = array();
 
 			foreach ( $structure_response['resources'] as $endpoint_name => $endpoint ) {
-				foreach ( $endpoint['methods'] as $method_name => $method_data ) {
-					$uri = $method_data['path'];
+				if ( isset( $endpoint['resources'] ) ) {
+					foreach ( $endpoint['resources'] as $nested_endpoint_name => $nested_endpoint ) {
+						$this->parse_endpoint( $nested_endpoint_name, $nested_endpoint );
+					}
+				} else {
+					$this->parse_endpoint( $endpoint_name, $endpoint );
+				}
+			}
+		}
 
-					$method      = $method_data['httpMethod'];
-					$description = $method_data['description'];
-					$scopes      = $method_data['scopes'];
+		/**
+		 * Parses endpoint data into routes.
+		 *
+		 * @since 1.0.0
+		 * @access protected
+		 *
+		 * @param string $endpoint_name Name of the endpoint to parse.
+		 * @param array  $endpoint      Data for that endpoint.
+		 */
+		protected function parse_endpoint( $endpoint_name, $endpoint ) {
+			foreach ( $endpoint['methods'] as $method_name => $method_data ) {
+				$uri = $method_data['path'];
 
-					$params = array();
+				$method      = $method_data['httpMethod'];
+				$description = $method_data['description'];
+				$scopes      = $method_data['scopes'];
 
-					if ( isset( $uri_lookup[ $uri ] ) ) {
-						foreach ( $method_data['parameters'] as $param => $param_data ) {
-							if ( isset( $param_data['location'] ) && 'path' === $param_data['location'] ) {
-								continue;
-							}
+				$params = array();
 
-							$params[ $param ] = $param_data;
+				if ( isset( $uri_lookup[ $uri ] ) ) {
+					foreach ( $method_data['parameters'] as $param => $param_data ) {
+						if ( isset( $param_data['location'] ) && 'path' === $param_data['location'] ) {
+							continue;
 						}
 
-						$parsed_uri = $uri_lookup[ $uri ];
-					} else {
-						$parsed_uri = $uri;
-						$primary_params = array();
-						foreach ( $method_data['parameters'] as $param => $param_data ) {
-							if ( isset( $param_data['location'] ) && 'path' === $param_data['location'] ) {
-								$primary_params[ $param ] = $param_data;
-
-								$chars = 'integer' === $param_data['type'] ? '\d' : '\w-';
-								$parsed_uri = str_replace( '{' . $param . '}', '(?P<' . $param . '>[' . $chars . ']+)', $parsed_uri );
-							} else {
-								$params[ $param ] = $param_data;
-							}
-						}
-
-						$uri_lookup[ $uri ] = $parsed_uri;
-
-						$this->routes[ $parsed_uri ] = array(
-							'primary_params' => $primary_params,
-							'methods'        => array(),
-						);
+						$params[ $param ] = $param_data;
 					}
 
-					$this->routes[ $parsed_uri ]['methods'][ $method ] = array(
-						'description'            => $description,
-						'params'                 => $params,
-						'supports_custom_params' => false,
-						'request_data_type'      => 'raw',
-						'needs_authentication'   => ! empty( $scopes ),
+					$parsed_uri = $uri_lookup[ $uri ];
+				} else {
+					$parsed_uri = $uri;
+					$primary_params = array();
+					foreach ( $method_data['parameters'] as $param => $param_data ) {
+						if ( isset( $param_data['location'] ) && 'path' === $param_data['location'] ) {
+							$primary_params[ $param ] = $param_data;
+
+							$chars = 'integer' === $param_data['type'] ? '\d' : '\w-';
+							$parsed_uri = str_replace( '{' . $param . '}', '(?P<' . $param . '>[' . $chars . ']+)', $parsed_uri );
+						} else {
+							$params[ $param ] = $param_data;
+						}
+					}
+
+					$uri_lookup[ $uri ] = $parsed_uri;
+
+					$this->routes[ $parsed_uri ] = array(
+						'primary_params' => $primary_params,
+						'methods'        => array(),
 					);
 				}
+
+				$this->routes[ $parsed_uri ]['methods'][ $method ] = array(
+					'description'            => $description,
+					'params'                 => $params,
+					'supports_custom_params' => false,
+					'request_data_type'      => 'raw',
+					'needs_authentication'   => ! empty( $scopes ),
+				);
 			}
 		}
 
