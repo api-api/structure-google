@@ -112,6 +112,7 @@ if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
 				}
 
 				$structure_response = array(
+					'title'      => $response->get_param( 'title' ),
 					'baseUrl'    => $response->get_param( 'baseUrl' ),
 					'parameters' => $response->get_param( 'parameters' ),
 					'auth'       => $response->get_param( 'auth' ),
@@ -121,6 +122,10 @@ if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
 				if ( is_callable( $this->update_cached_structure_callback ) ) {
 					call_user_func( $this->update_cached_structure_callback, $this->discovery_uri, $structure_response );
 				}
+			}
+
+			if ( $structure_response['title'] ) {
+				$this->title = $structure_response['title'];
 			}
 
 			$this->base_uri = $structure_response['baseUrl'];
