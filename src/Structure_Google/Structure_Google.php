@@ -112,11 +112,12 @@ if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
 				}
 
 				$structure_response = array(
-					'title'      => $response->get_param( 'title' ),
-					'baseUrl'    => $response->get_param( 'baseUrl' ),
-					'parameters' => $response->get_param( 'parameters' ),
-					'auth'       => $response->get_param( 'auth' ),
-					'resources'  => $response->get_param( 'resources' ),
+					'title'       => $response->get_param( 'title' ),
+					'description' => $response->get_param( 'description' ),
+					'baseUrl'     => $response->get_param( 'baseUrl' ),
+					'parameters'  => $response->get_param( 'parameters' ),
+					'auth'        => $response->get_param( 'auth' ),
+					'resources'   => $response->get_param( 'resources' ),
 				);
 
 				if ( is_callable( $this->update_cached_structure_callback ) ) {
@@ -126,6 +127,10 @@ if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
 
 			if ( $structure_response['title'] ) {
 				$this->title = $structure_response['title'];
+			}
+
+			if ( $structure_response['description'] ) {
+				$this->description = $structure_response['description'];
 			}
 
 			$this->base_uri = $structure_response['baseUrl'];
