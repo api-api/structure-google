@@ -134,7 +134,14 @@ if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
 			}
 
 			$this->base_uri = $structure_response['baseUrl'];
+
 			$this->global_params = $structure_response['parameters'];
+			if ( isset( $this->global_params['key'] ) ) {
+				$this->global_params['key']['internal'] = true;
+			}
+			if ( isset( $this->global_params['oauth_token'] ) ) {
+				$this->global_params['oauth_token']['internal'] = true;
+			}
 
 			$this->uri_lookup = array();
 
