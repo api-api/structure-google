@@ -12,6 +12,7 @@ use APIAPI\Core\Structures\Structure;
 use APIAPI\Core\Transporters\Transporter;
 use APIAPI\Core\Request\Request;
 use APIAPI\Core\Request\Response;
+use APIAPI\Core\Request\Method;
 use APIAPI\Core\Exception;
 
 if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
@@ -102,7 +103,7 @@ if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
 			if ( ! is_array( $structure_response ) ) {
 				$transporter = $this->get_default_transporter();
 
-				$request = new Request( $this->discovery_uri, 'GET' );
+				$request = new Request( $this->discovery_uri, Method::GET );
 				$response = new Response( $transporter->send_request( $request ) );
 
 				if ( null === $response->get_param( 'baseUrl' ) ) {
