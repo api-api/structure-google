@@ -2,7 +2,7 @@
 /**
  * Structure loader.
  *
- * @package APIAPIStructureGoogle
+ * @package APIAPI\Structure_Google
  * @since 1.0.0
  */
 

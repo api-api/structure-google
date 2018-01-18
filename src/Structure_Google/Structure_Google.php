@@ -2,13 +2,14 @@
 /**
  * Structure_Google class
  *
- * @package APIAPIStructureGoogle
+ * @package APIAPI\Structure_Google
  * @since 1.0.0
  */
 
 namespace APIAPI\Structure_Google;
 
 use APIAPI\Core\Structures\Structure;
+use APIAPI\Core\Transporters\Transporter;
 use APIAPI\Core\Request\Request;
 use APIAPI\Core\Request\Response;
 use APIAPI\Core\Exception;
@@ -25,7 +26,6 @@ if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
 		 * Discovery URI for the API.
 		 *
 		 * @since 1.0.0
-		 * @access protected
 		 * @var string
 		 */
 		protected $discovery_uri = '';
@@ -34,7 +34,6 @@ if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
 		 * Callback to get a cached structure response.
 		 *
 		 * @since 1.0.0
-		 * @access protected
 		 * @var callable|null
 		 */
 		protected $get_cached_structure_callback = null;
@@ -43,7 +42,6 @@ if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
 		 * Callback to update the structure response in cache.
 		 *
 		 * @since 1.0.0
-		 * @access protected
 		 * @var callable|null
 		 */
 		protected $update_cached_structure_callback = null;
@@ -52,7 +50,6 @@ if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
 		 * Internal variable to aid with parsing a discovery response.
 		 *
 		 * @since 1.0.0
-		 * @access protected
 		 * @var array
 		 */
 		protected $uri_lookup = array();
@@ -77,7 +74,7 @@ if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
 		 *                                                      Default null.
 		 * }
 		 */
-		public function __construct( $name, $discovery_uri, $args = array() ) {
+		public function __construct( $name, $discovery_uri, array $args = array() ) {
 			$this->discovery_uri = $discovery_uri;
 
 			foreach ( $args as $key => $value ) {
@@ -97,7 +94,8 @@ if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
 		 * class and default authentication data.
 		 *
 		 * @since 1.0.0
-		 * @access protected
+		 *
+		 * @throws Exception Thrown when the discovery API response is invalid.
 		 */
 		protected function setup() {
 			$structure_response = is_callable( $this->get_cached_structure_callback ) ? call_user_func( $this->get_cached_structure_callback, $this->discovery_uri ) : false;
@@ -160,12 +158,11 @@ if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
 		 * Parses endpoint data into routes.
 		 *
 		 * @since 1.0.0
-		 * @access protected
 		 *
 		 * @param string $endpoint_name Name of the endpoint to parse.
 		 * @param array  $endpoint      Data for that endpoint.
 		 */
-		protected function parse_endpoint( $endpoint_name, $endpoint ) {
+		protected function parse_endpoint( $endpoint_name, array $endpoint ) {
 			foreach ( $endpoint['methods'] as $method_name => $method_data ) {
 				$uri = $method_data['path'];
 
@@ -228,9 +225,8 @@ if ( ! class_exists( 'APIAPI\Structure_Google\Structure_Google' ) ) {
 		 * Gets the default transporter object.
 		 *
 		 * @since 1.0.0
-		 * @access protected
 		 *
-		 * @return APIAPI\Core\Transporters\Transporter Default transporter object.
+		 * @return Transporter Default transporter object.
 		 */
 		protected function get_default_transporter() {
 			//TODO: This breaks the dependency injection pattern.
