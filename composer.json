@@ -2,7 +2,7 @@
   "name": "api-api/structure-google",
   "description": "Structure implementation for the API of any Google service.",
   "version": "1.0.0",
-  "license": "GPL-3.0",
+  "license": "GPL-2.0-or-later",
   "keywords": [
     "api-api",
     "structure",
